@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+              content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Document</title>
+    </head>
+    <body>
+        <div id="app">
+            <h1>Cade Buffet?</h1>
+
+            <input type="text" v-model="searchText">
+
+            <div v-if="resultList.length <= 0">
+                <p>Nenhum buffet encontrado</p>
+            </div>
+
+            <ul>
+                <li v-for="item in resultList">
+                    <dl>
+                        <dt v-text="item.name"></dt>
+                        <dd v-text="item.description"></dd>
+                        <dd v-text="item.phone"></dd>
+                        <dd v-text="item.email"></dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+
+        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+        <script src="main.js"></script>
+    </body>
+</html>
