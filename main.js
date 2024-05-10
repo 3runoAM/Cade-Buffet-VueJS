@@ -2,10 +2,15 @@ const app = Vue.createApp({
     data(){
         return {
             searchText: '',
+            buffetList: [],
             selectedBuffet: null,
             selectBuffetEvents: [],
-            buffetList: []
-        }
+            availabilityRequest: {
+                eventDate: null,
+                total_guests: null,
+                result: null
+            }
+        };
     },
 
     computed: {
@@ -66,7 +71,7 @@ const app = Vue.createApp({
                 eventInfo.event_prices.forEach(eventPrice => {
                     let price = {}
                     price.id = eventPrice.id
-                    price.eventID = eventPrice.event_id
+                    price.eventId = eventPrice.event_id
                     price.dayType = this.dayTypeConverter(eventPrice.day_type)
                     price.extra_guest_price = eventPrice.extra_guest_price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
                     price.extra_hour_price = eventPrice.extra_hour_price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -74,30 +79,45 @@ const app = Vue.createApp({
                     event.prices.push(price)
                 })
 
-                console.log(event.prices)
                 events.push(event)
             })
-            return events
+            return events;
         },
 
         dayTypeConverter(dayType){
-            return dayType == 'weekend' ? "fim de semana" : "dias úteis"
+            return dayType == 'weekend' ? "fim de semana" : "dias úteis";
         },
 
         convertMinutesToHours(minutes) {
             var hours = Math.floor(minutes / 60);
             var minutesLeft = minutes % 60;
-            return minutesLeft == 0 ? `${hours}h` :  `${hours}h${minutesLeft}`
+            return minutesLeft == 0 ? `${hours}h` :  `${hours}h${minutesLeft}`;
         },
 
         convertBooleanToHuman(boolean) {
-            return boolean === true ? 'Sim' : 'Não'
+            return boolean === true ? 'Sim' : 'Não';
         },
 
         async selectBuffet(index) {
-            this.selectedBuffet = this.buffetList[index]
-            this.selectBuffetEvents = await this.getEvents(this.selectedBuffet.id)
+            this.selectedBuffet = this.buffetList[index];
+            this.selectBuffetEvents = await this.getEvents(this.selectedBuffet.id);
         },
+
+        async checkAvailabilityRequest(event){
+            if(this.availabilityRequest.eventDate && this.availabilityRequest.total_guests){
+                let response = await fetch(`http://localhost:3000/api/v1/buffets/${event.buffetId}/${event.eventId}/${this.availabilityRequest.eventDate}/${this.availabilityRequest.total_guests}`);
+                let data = await response.json();
+                console.log(data)
+                if(data.error){
+                    data.error.forEach(err => {
+                        this.availabilityRequest.result = `${data.error} `
+                    })
+
+                } else{
+                    this.availabilityRequest.result = `Preço: ${data.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`
+                }
+            }
+        }
     }
 })
 

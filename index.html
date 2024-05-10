@@ -11,19 +11,19 @@
         <div id="app">
             <h1><a href="index.html">Cade Buffet?</a></h1>
 
-            <input type="text" v-model="searchText">
-            <div v-if="resultList.length <= 0">
-                <p>Nenhum buffet encontrado</p>
-            </div>
-
             <div v-if="selectedBuffet === null">
+                <input type="text" v-model="searchText">
+                <div v-if="resultList.length <= 0">
+                    <p>Nenhum buffet encontrado</p>
+                </div>
+
                 <ul>
-                    <li v-for="item, index in resultList">
+                    <li v-for="buffet, buffet_index in resultList">
                         <dl>
-                            <dt v-text="item.name"></dt>
-                            <dd v-text="item.description"></dd>
+                            <dt v-text="buffet.name"></dt>
+                            <dd v-text="buffet.description"></dd>
                         </dl>
-                        <button v-on:click="selectBuffet(index)">Ver detalhes do buffet</button>
+                        <button v-on:click="selectBuffet(buffet_index)">Ver detalhes do buffet</button>
                     </li>
                 </ul>
             </div>
@@ -36,58 +36,72 @@
                 <h2>Eventos fornecidos</h2>
                 <div>
                     <ul>
-                        <li v-for="item in selectBuffetEvents">
+                        <li v-for="event in selectBuffetEvents">
                             <dl>
-                                <dt><h3 v-text="item.name"></h3></dt>
-                                <dd v-text="item.description"></dd>
+                                <dt><h3 v-text="event.name"></h3></dt>
+                                <dd v-text="event.description"></dd>
                                 <br/>
 
                                 <dt>Duração padrão</dt>
-                                <dd v-text="item.standard_duration"></dd>
+                                <dd v-text="event.standard_duration"></dd>
                                 <br/>
 
                                 <dt>Número mínimo de convidados</dt>
-                                <dd v-text="item.min_guests"></dd>
+                                <dd v-text="event.min_guests"></dd>
                                 <br/>
 
 
                                 <dt>Número máximo de convidados</dt>
-                                <dd v-text="item.max_guests"></dd>
+                                <dd v-text="event.max_guests"></dd>
                                 <br/>
 
                                 <dt>Menu</dt>
-                                <dd v-text="item.menu"></dd>
+                                <dd v-text="event.menu"></dd>
                                 <br/>
 
                                 <dt>Oferece bebida alcóolica?</dt>
-                                <dd v-text="item.offers_alcohol"></dd>
+                                <dd v-text="event.offers_alcohol"></dd>
                                 <br/>
 
                                 <dt>Decoração inclusiva?</dt>
-                                <dd v-text="item.offers_decoration"></dd>
+                                <dd v-text="event.offers_decoration"></dd>
                                 <br/>
 
                                 <dt>Oferece serviço de estacionamento?</dt>
-                                <dd v-text="item.offers_valet_parking"></dd>
+                                <dd v-text="event.offers_valet_parking"></dd>
                                 <br/>
 
                                 <dt>Evento externo?</dt>
-                                <dd v-text="item.offsite_event"></dd>
+                                <dd v-text="event.offsite_event"></dd>
                             </dl>
 
                             <h3>Preços</h3>
-                            <div v-for="price in item.prices">
+                            <div v-for="price in event.prices">
                                 <dt><h3>Evento em <span v-text="price.dayType"></span></h3></dt>
                                 <dl>Preço padrão: <span v-text="price.standard_price"></span></dl>
                                 <dl>Adicional por convidado extra: <span v-text="price.extra_guest_price"></span></dl>
                                 <dl>Adicional por hora extra: <span v-text="price.extra_hour_price"></span></dl>
                             </div>
+
+                            <div>
+                                <h3>Gostaria de verificar a disponibilidade deste evento?</h3>
+                                <div>
+                                    <label for="eventDate">Data do evento: </label>
+                                    <input required id="eventDate" type="date" v-model="availabilityRequest.eventDate">
+
+                                    <label for="total_guests">Número de convidados</label>
+                                    <input required id="total_guests" type="number" v-model="availabilityRequest.total_guests">
+                                </div>
+                                <button v-on:click="checkAvailabilityRequest(event)">Verificar disponibilidade para evento</button>
+
+                                <div v-if="availabilityRequest.result">
+                                    <p v-text="availabilityRequest.result"></p>
+                                </div>
+                            </div>
                         </li>
                     </ul>
                 </div>
             </div>
-
-
         </div>
 
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
