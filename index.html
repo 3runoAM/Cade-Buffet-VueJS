@@ -9,24 +9,85 @@
     </head>
     <body>
         <div id="app">
-            <h1>Cade Buffet?</h1>
+            <h1><a href="index.html">Cade Buffet?</a></h1>
 
             <input type="text" v-model="searchText">
-
             <div v-if="resultList.length <= 0">
                 <p>Nenhum buffet encontrado</p>
             </div>
 
-            <ul>
-                <li v-for="item in resultList">
-                    <dl>
-                        <dt v-text="item.name"></dt>
-                        <dd v-text="item.description"></dd>
-                        <dd v-text="item.phone"></dd>
-                        <dd v-text="item.email"></dd>
-                    </dl>
-                </li>
-            </ul>
+            <div v-if="selectedBuffet === null">
+                <ul>
+                    <li v-for="item, index in resultList">
+                        <dl>
+                            <dt v-text="item.name"></dt>
+                            <dd v-text="item.description"></dd>
+                        </dl>
+                        <button v-on:click="selectBuffet(index)">Ver detalhes do buffet</button>
+                    </li>
+                </ul>
+            </div>
+
+            <div v-else="">
+                <h1><span v-text="selectedBuffet.name"></span> </h1>
+                <b>Descrição:</b> <span v-text="selectedBuffet.description"></span>
+                <p>Contato: <span v-text="selectedBuffet.email"></span> | <span v-text="selectedBuffet.phone"></span> </p>
+
+                <h2>Eventos fornecidos</h2>
+                <div>
+                    <ul>
+                        <li v-for="item in selectBuffetEvents">
+                            <dl>
+                                <dt><h3 v-text="item.name"></h3></dt>
+                                <dd v-text="item.description"></dd>
+                                <br/>
+
+                                <dt>Duração padrão</dt>
+                                <dd v-text="item.standard_duration"></dd>
+                                <br/>
+
+                                <dt>Número mínimo de convidados</dt>
+                                <dd v-text="item.min_guests"></dd>
+                                <br/>
+
+
+                                <dt>Número máximo de convidados</dt>
+                                <dd v-text="item.max_guests"></dd>
+                                <br/>
+
+                                <dt>Menu</dt>
+                                <dd v-text="item.menu"></dd>
+                                <br/>
+
+                                <dt>Oferece bebida alcóolica?</dt>
+                                <dd v-text="item.offers_alcohol"></dd>
+                                <br/>
+
+                                <dt>Decoração inclusiva?</dt>
+                                <dd v-text="item.offers_decoration"></dd>
+                                <br/>
+
+                                <dt>Oferece serviço de estacionamento?</dt>
+                                <dd v-text="item.offers_valet_parking"></dd>
+                                <br/>
+
+                                <dt>Evento externo?</dt>
+                                <dd v-text="item.offsite_event"></dd>
+                            </dl>
+
+                            <h3>Preços</h3>
+                            <div v-for="price in item.prices">
+                                <dt><h3>Evento em <span v-text="price.dayType"></span></h3></dt>
+                                <dl>Preço padrão: <span v-text="price.standard_price"></span></dl>
+                                <dl>Adicional por convidado extra: <span v-text="price.extra_guest_price"></span></dl>
+                                <dl>Adicional por hora extra: <span v-text="price.extra_hour_price"></span></dl>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+
         </div>
 
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
